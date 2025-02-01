@@ -1,5 +1,6 @@
 ﻿using VBAN_Studio.Common;
 using VBAN_Studio.Common.AudioInputs;
+using VBAN_Studio.Common.AudioModifiers;
 using VBAN_Studio.Common.AudioOutputs;
 
 namespace VBAN_Studio.AudioEngine
@@ -42,6 +43,12 @@ namespace VBAN_Studio.AudioEngine
                     case "reinit":
                         ReinitializeEnvironment();
                         break;
+                    case "restart":                        
+                        RestartEnvironment();
+                        break;
+                    case "mastervolume":
+                        handleMasterVolumeCommand(tokens);
+                        break;
 
                     case "save":
                         HandleSaveLoadCommand(tokens, save: true);
@@ -60,6 +67,33 @@ namespace VBAN_Studio.AudioEngine
             {
                 Console.WriteLine($"Error processing command: {ex.Message}");
             }
+        }
+
+        private static void handleMasterVolumeCommand(string[] tokens)
+        {
+            if (tokens.Length<2)
+            {
+                Console.WriteLine("[get|set]");
+                return;
+            }
+            if (tokens[1] == "get")
+            {
+                Console.WriteLine(VolumeModifier.MasterVolume);
+            }
+            if (tokens[1] == "set")
+            {
+                var val = float.Parse(tokens[2]);
+                VolumeModifier.MasterVolume = val;
+            }
+        }
+
+        private static void RestartEnvironment()
+        {
+            var defaultFileName = "restart";
+            HandleSaveLoadCommand(["", defaultFileName], true);
+            ReinitializeEnvironment();
+            HandleSaveLoadCommand(["", defaultFileName], false);
+
         }
 
         private static void HandleUnmapCommand(string[] tokens)
@@ -118,9 +152,9 @@ namespace VBAN_Studio.AudioEngine
             }
 
             if (save)
-                VBAN_Studio_Environment.SaveEnvironment(tokens[1]);
+                VBAN_Studio_Environment.SaveEnvironment(tokens[1]+".vbstd");
             else
-                VBAN_Studio_Environment.LoadEnvironment(tokens[1]);
+                VBAN_Studio_Environment.LoadEnvironment(tokens[1] + ".vbstd");
 
             Console.WriteLine($"{(save ? "Saved" : "Loaded")} environment: {tokens[1]}");
         }

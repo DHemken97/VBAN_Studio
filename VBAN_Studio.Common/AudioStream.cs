@@ -15,6 +15,7 @@ namespace VBAN_Studio.Common
         {
             Id = id;
             Modifiers = new List<AudioModifier>();
+            Modifiers.Add(new VolumeModifier());
         }
 
         public void Start()
@@ -30,7 +31,10 @@ namespace VBAN_Studio.Common
 
         private void OnInputAvailable(object sender, AudioPacketEventArgs e)
         {
-            Output.Write(e.bytes);
+            var data = e.bytes;
+            foreach (AudioModifier modifier in Modifiers) 
+                data = modifier.Apply(data);
+            Output.Write(data);
         }
 
         public string GetConfigCommand()

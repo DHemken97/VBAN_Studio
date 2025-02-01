@@ -12,7 +12,6 @@ namespace VBAN_Studio.Common.AudioOutputs
         {
             waveOut = new WaveOutEvent { DeviceNumber = deviceIndex };
             waveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, bitsPerSample, channels));
-
             waveOut.Init(waveProvider);
         }
 

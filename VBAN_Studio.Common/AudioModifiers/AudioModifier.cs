@@ -1,6 +1,8 @@
 ﻿namespace VBAN_Studio.Common.AudioModifiers
 {
-    public class AudioModifier
+    public abstract class AudioModifier
     {
+        public abstract byte[] Apply(byte[] data);
     }
+
 }
