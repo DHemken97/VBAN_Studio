@@ -6,6 +6,8 @@
         private readonly byte[] _buffer;
         private int _bufferIndex;
         public int Id { get; private set; }
+        public override string Name { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+
         public AudioBus(int id, List<AudioInput> inputs, int packetSize = 412)
         {
             Id = id;
@@ -102,6 +104,11 @@
         }
 
         internal void AddOutput(AudioDevice output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override float[] Process(float[] buffer, int sampleRate)
         {
             throw new NotImplementedException();
         }

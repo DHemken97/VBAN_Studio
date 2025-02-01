@@ -1,5 +1,4 @@
-﻿using System;
-using VBAN_Studio.Common;
+﻿using VBAN_Studio.Common;
 using VBAN_Studio.Common.Command;
 
 namespace VBAN_Studio.Core.Commands

@@ -9,6 +9,8 @@ namespace VBAN_Studio.Core.AudioOutputs
         private readonly WaveOutEvent waveOut;
         private readonly BufferedWaveProvider waveProvider;
 
+        public override string Name { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+
         public HardwareOutput(int sampleRate, int bitsPerSample, int channels, int deviceIndex = -1)
         {
             waveOut = new WaveOutEvent { DeviceNumber = deviceIndex };
@@ -48,6 +50,11 @@ namespace VBAN_Studio.Core.AudioOutputs
         public override string BuildDeviceCommand() => $"hw {waveOut.DeviceNumber}";
 
         public override string GetConfigCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override float[] Process(float[] buffer, int sampleRate)
         {
             throw new NotImplementedException();
         }

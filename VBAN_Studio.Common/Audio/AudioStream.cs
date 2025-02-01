@@ -6,6 +6,7 @@
         public AudioInput Input { get; set; }
         public List<AudioModifier> Modifiers { get; }
         public AudioOutput Output { get; set; }
+        public override string Name { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
 
         public AudioStream(int id)
         {
@@ -41,6 +42,9 @@
         {
         }
 
-       
+        public override float[] Process(float[] buffer, int sampleRate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

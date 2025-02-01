@@ -13,6 +13,8 @@ namespace VBAN_Studio.Core.AudioInputs
         private readonly byte[] Buffer;
         private readonly WaveInEvent waveIn;
 
+        public override string Name { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+
         public override event EventHandler<AudioPacketEventArgs> DataAvailable;
 
         public HardwareInput(int sampleRate, int bitsPerSample, int channels, int buffer = 15, int deviceIndex = -1)
@@ -145,6 +147,11 @@ namespace VBAN_Studio.Core.AudioInputs
         public override string BuildDeviceCommand() => $"hw {waveIn.DeviceNumber}";
 
         public override string GetConfigCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override float[] Process(float[] buffer, int sampleRate)
         {
             throw new NotImplementedException();
         }

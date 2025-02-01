@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using VBAN_Studio.Common.Audio;
+﻿using VBAN_Studio.Common.Audio;
 
 namespace VBAN_Studio.Common
 {
