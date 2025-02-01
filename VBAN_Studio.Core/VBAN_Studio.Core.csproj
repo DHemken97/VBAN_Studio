@@ -4,10 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+    <PackAsTool>True</PackAsTool>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VBAN_Studio.Common\VBAN_Studio.Common.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y /E &quot;$(TargetDir)VBAN_Studio.Core.dll&quot; &quot;$(SolutionDir)Vban_Studio.Server\bin\Debug\net8.0\plugins&quot;&#xD;&#xA;" />
+  </Target>
 
 </Project>

@@ -1,16 +1,19 @@
 ﻿
-using VBAN_Studio.AudioEngine;
 
-VBAN_Studio_Environment.Init();
-//VBAN_Studio_Environment.SaveEnvironment("AudioStreams.json");
-//VBAN_Studio_Environment.LoadEnvironment("AudioStreams.json");
+
+using VBAN_Studio.Common;
+
+var routingManager = new RoutingManager();
+var commandManager = new CommandManager();
+commandManager.RegisterCommandsFromPlugins("./Plugins");
+
 var exit = false;
 while (!exit)
 {
     var command = Console.ReadLine();
     if (command == "exit")  
         exit = true;
-  //  else
-      //  CommandInterpreter.InterpretCommand(command);
+    commandManager.ExecuteCommand(command);
 }
-VBAN_Studio_Environment.Shutdown();
+
+routingManager.Dispose();

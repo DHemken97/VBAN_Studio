@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VBAN_Studio.AudioEngine\VBAN_Studio.AudioEngine.csproj" />
+    <ProjectReference Include="..\VBAN_Studio.Common\VBAN_Studio.Common.csproj" />
   </ItemGroup>
 
 </Project>
