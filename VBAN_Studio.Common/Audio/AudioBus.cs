@@ -95,6 +95,16 @@
         {
             throw new NotImplementedException();
         }
+
+        internal void AddInput(AudioDevice source)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AddOutput(AudioDevice output)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
