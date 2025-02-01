@@ -21,10 +21,6 @@ namespace VBAN_Studio.Common.AudioOutputs
                 Console.WriteLine($"Output Device: {i++}:{device.FriendlyName}");
 
             }
-
-        //    string deviceName = WaveOut.GetCapabilities(i).ProductName;
-            //    Console.WriteLine($"Output Device {i}: {deviceName}");
-            
         }
 
         public abstract string BuildDeviceCommand();

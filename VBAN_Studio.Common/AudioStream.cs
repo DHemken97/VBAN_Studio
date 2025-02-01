@@ -26,7 +26,7 @@ namespace VBAN_Studio.Common
             Input.Start();
             Output.Start();
 
-            Console.WriteLine($"Mapped {Input.GetDisplayName()} -> {Output.GetDisplayName()}");
+            Console.WriteLine($"Stream {Id} Mapped {Input.GetDisplayName()} -> {Output.GetDisplayName()}");
         }
 
         private void OnInputAvailable(object sender, AudioPacketEventArgs e)

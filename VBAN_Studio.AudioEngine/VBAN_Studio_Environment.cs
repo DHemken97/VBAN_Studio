@@ -2,6 +2,7 @@
 using VBAN_Studio.Common.AudioInputs;
 using VBAN_Studio.Common.AudioOutputs;
 using System.Collections.Concurrent;
+using VBAN_Studio.Common.AudioBus;
 
 namespace VBAN_Studio.AudioEngine
 {
@@ -14,6 +15,17 @@ namespace VBAN_Studio.AudioEngine
             ListDevices();
             AudioStreams.Clear();
             Console.WriteLine("Environment Started");
+
+
+            var in0 = new HardwareInput(44100, 16, 2,15,0);
+            var bus0 = new AudioBus(0,new() { in0 });
+            var bus1 = new AudioBus(1,new() { bus0 });
+            var out0 = new HardwareOutput(44100, 16, 2, 5);
+            var stream0 = new AudioStream(1) { Input = bus1, Output = out0 };
+            stream0.Start();
+            AudioStreams.Add(stream0);
+
+
         }
 
         public static void Shutdown()
