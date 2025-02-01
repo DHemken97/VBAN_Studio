@@ -8,7 +8,7 @@ namespace VBAN_Studio.Core.Commands
 
         public override string Description => "Generates a list";
 
-        public override void Execute(string[] tokens)
+        public override void Execute(VbanStudioEnvironment _environment, string[] tokens)
         {
             Console.WriteLine("List [options]");
         }

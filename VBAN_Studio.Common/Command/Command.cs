@@ -4,7 +4,7 @@
     {
         string Name { get; }
         string Description { get; }
-        void Execute(string[] args);
+        void Execute(VbanStudioEnvironment _environment, string[] args);
     }
 
     public abstract class Command : ICommand
@@ -13,6 +13,6 @@
 
         public abstract string Description { get;}
 
-        public abstract void Execute(string[] tokens);
+        public abstract void Execute(VbanStudioEnvironment _environment, string[] tokens);
     }
 }

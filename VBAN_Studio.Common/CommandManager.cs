@@ -7,20 +7,22 @@ namespace VBAN_Studio.Common
     {
         private readonly Dictionary<string, ICommand> _commands = new();
 
+        private VbanStudioEnvironment _environment;
+
         public void RegisterCommand(ICommand command)
         {
-            _commands[command.Name] = command;
+            _commands[command.Name.ToLower()] = command;
         }
 
         public void ExecuteCommand(string input)
         {
             var parts = input.Split(' ');
-            var commandName = parts[0];
+            var commandName = parts[0].ToLower();
             var args = parts.Skip(1).ToArray();
 
             if (_commands.TryGetValue(commandName, out var command))
             {
-                command.Execute(args);
+                command.Execute(_environment,args);
             }
             else if (commandName == "help" || commandName=="?")
                 ShowHelp();
@@ -61,7 +63,7 @@ namespace VBAN_Studio.Common
                     {
                         if (Activator.CreateInstance(type) is ICommand command)
                         {
-                            _commands[command.Name] = command;
+                            _commands[command.Name.ToLower()] = command;
                             Console.WriteLine($"Loaded command: {command.Name} from {dll}");
                         }
                     }
@@ -71,6 +73,11 @@ namespace VBAN_Studio.Common
                     Console.WriteLine($"Failed to load plugin {dll}: {ex.Message}");
                 }
             }
+        }
+
+        internal void RegisterEnvironment(VbanStudioEnvironment vbanStudioEnvironment)
+        {
+            _environment = vbanStudioEnvironment;
         }
     }
 

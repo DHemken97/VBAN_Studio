@@ -3,9 +3,7 @@
 
 using VBAN_Studio.Common;
 
-var routingManager = new RoutingManager();
-var commandManager = new CommandManager();
-commandManager.RegisterCommandsFromPlugins("./Plugins");
+var env = new VbanStudioEnvironment();
 
 var exit = false;
 while (!exit)
@@ -13,7 +11,7 @@ while (!exit)
     var command = Console.ReadLine();
     if (command == "exit")  
         exit = true;
-    commandManager.ExecuteCommand(command);
+    env.CommandManager.ExecuteCommand(command);
 }
 
-routingManager.Dispose();
+env.RoutingManager.Dispose();

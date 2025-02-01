@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VBAN_Studio.Server", "VBAN_Studio.Server\VBAN_Studio.Server.csproj", "{43FDD867-A2AE-4154-A7C0-F2DDDEE7AEC9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF280510-6798-47C1-98BA-44679CF83460} = {CF280510-6798-47C1-98BA-44679CF83460}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VBAN_Studio.Common", "VBAN_Studio.Common\VBAN_Studio.Common.csproj", "{8B9EACCC-76F9-4C7E-BB85-9D002B0EFE77}"
 EndProject
