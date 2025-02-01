@@ -1,7 +1,8 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioOutputs
+namespace VBAN_Studio.Core.AudioOutputs
 {
     public class VbanOutput : AudioOutput
     {
@@ -54,9 +55,9 @@ namespace VBAN_Studio.Common.AudioOutputs
         private void UpdateFrameCounter(byte[] vbanHeader)
         {
             vbanHeader[24] = (byte)(frameCounter & 0xFF);
-            vbanHeader[25] = (byte)((frameCounter >> 8) & 0xFF);
-            vbanHeader[26] = (byte)((frameCounter >> 16) & 0xFF);
-            vbanHeader[27] = (byte)((frameCounter >> 24) & 0xFF);
+            vbanHeader[25] = (byte)(frameCounter >> 8 & 0xFF);
+            vbanHeader[26] = (byte)(frameCounter >> 16 & 0xFF);
+            vbanHeader[27] = (byte)(frameCounter >> 24 & 0xFF);
             frameCounter++;
         }
 

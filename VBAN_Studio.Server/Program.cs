@@ -10,7 +10,7 @@ while (!exit)
     var command = Console.ReadLine();
     if (command == "exit")  
         exit = true;
-    else
-        CommandInterpreter.InterpretCommand(command);
+  //  else
+      //  CommandInterpreter.InterpretCommand(command);
 }
 VBAN_Studio_Environment.Shutdown();

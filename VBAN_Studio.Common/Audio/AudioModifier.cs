@@ -1,4 +1,4 @@
-﻿namespace VBAN_Studio.Common.AudioModifiers
+﻿namespace VBAN_Studio.Common.Audio
 {
     public abstract class AudioModifier
     {

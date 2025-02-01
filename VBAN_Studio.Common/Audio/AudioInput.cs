@@ -1,6 +1,6 @@
 ﻿using NAudio.Wave;
 
-namespace VBAN_Studio.Common.AudioInputs
+namespace VBAN_Studio.Common.Audio
 {
     public abstract class AudioInput : IDisposable
     {
@@ -13,10 +13,10 @@ namespace VBAN_Studio.Common.AudioInputs
         public abstract void Start();
 
         public abstract string GetDisplayName();
-        
+
         public static void ListAudioDevices()
         {
-        
+
             int deviceCount = WaveInEvent.DeviceCount;
             Console.WriteLine("Available Input Devices:");
 

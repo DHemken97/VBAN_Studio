@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VBAN_Studio.Common.AudioInputs;
 
-namespace VBAN_Studio.Common.AudioBus
+namespace VBAN_Studio.Common.Audio
 {
     public class AudioBus : AudioInput
     {
@@ -13,7 +12,7 @@ namespace VBAN_Studio.Common.AudioBus
         private readonly byte[] _buffer;
         private int _bufferIndex;
         public int Id { get; private set; }
-        public AudioBus(int id,List<AudioInput> inputs, int packetSize = 412)
+        public AudioBus(int id, List<AudioInput> inputs, int packetSize = 412)
         {
             Id = id;
             _inputs = inputs ?? throw new ArgumentNullException(nameof(inputs));
@@ -83,7 +82,7 @@ namespace VBAN_Studio.Common.AudioBus
         public override string GetDisplayName()
         {
             return $"Bus {Id}";
-           // return string.Join(" + ", _inputs.Select(input => input.GetDisplayName()));
+            // return string.Join(" + ", _inputs.Select(input => input.GetDisplayName()));
         }
 
         // Return a custom command for the bus

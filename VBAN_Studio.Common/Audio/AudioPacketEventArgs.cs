@@ -1,4 +1,4 @@
-﻿namespace VBAN_Studio.Common
+﻿namespace VBAN_Studio.Common.Audio
 {
     public class AudioPacketEventArgs : EventArgs
     {

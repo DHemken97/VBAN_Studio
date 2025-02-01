@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioModifiers
+namespace VBAN_Studio.Core.AudioModifiers
 {
     public class VolumeModifier : AudioModifier
     {

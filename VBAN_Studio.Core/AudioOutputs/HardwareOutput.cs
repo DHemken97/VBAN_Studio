@@ -1,7 +1,8 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioOutputs
+namespace VBAN_Studio.Core.AudioOutputs
 {
     public class HardwareOutput : AudioOutput
     {

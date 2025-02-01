@@ -1,8 +1,5 @@
-﻿using VBAN_Studio.Common;
-using VBAN_Studio.Common.AudioInputs;
-using VBAN_Studio.Common.AudioOutputs;
-using System.Collections.Concurrent;
-using VBAN_Studio.Common.AudioBus;
+﻿using System.Collections.Concurrent;
+using VBAN_Studio.Common.Audio;
 
 namespace VBAN_Studio.AudioEngine
 {
@@ -17,13 +14,13 @@ namespace VBAN_Studio.AudioEngine
             Console.WriteLine("Environment Started");
 
 
-            var in0 = new HardwareInput(44100, 16, 2,15,0);
-            var bus0 = new AudioBus(0,new() { in0 });
-            var bus1 = new AudioBus(1,new() { bus0 });
-            var out0 = new HardwareOutput(44100, 16, 2, 5);
-            var stream0 = new AudioStream(1) { Input = bus1, Output = out0 };
-            stream0.Start();
-            AudioStreams.Add(stream0);
+            //var in0 = new HardwareInput(44100, 16, 2,15,0);
+            //var bus0 = new AudioBus(0,new() { in0 });
+            //var bus1 = new AudioBus(1,new() { bus0 });
+            //var out0 = new HardwareOutput(44100, 16, 2, 5);
+            //var stream0 = new AudioStream(1) { Input = bus1, Output = out0 };
+            //stream0.Start();
+            //AudioStreams.Add(stream0);
 
 
         }
@@ -72,7 +69,7 @@ namespace VBAN_Studio.AudioEngine
 
                 foreach (var command in commands)
                 {
-                    CommandInterpreter.InterpretCommand(command);
+                    //CommandInterpreter.InterpretCommand(command);
                 }
                 Console.WriteLine($"Environment loaded from {path}");
             }

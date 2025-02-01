@@ -1,6 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 
-namespace VBAN_Studio.Common.AudioOutputs
+namespace VBAN_Studio.Common.Audio
 {
     public abstract class AudioOutput : IDisposable
     {

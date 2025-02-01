@@ -1,6 +1,7 @@
 ﻿using NAudio.Wave;
+using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioInputs
+namespace VBAN_Studio.Core.AudioInputs
 {
     public class HardwareInput : AudioInput
     {
