@@ -96,6 +96,11 @@ namespace VBAN_Studio.Common.Audio
         {
             return _inputs.Sum(input => input.GetReadCount());
         }
+
+        public override string GetConfigCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

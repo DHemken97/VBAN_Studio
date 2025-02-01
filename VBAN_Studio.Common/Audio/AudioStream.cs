@@ -1,6 +1,6 @@
 ﻿namespace VBAN_Studio.Common.Audio
 {
-    public class AudioStream
+    public class AudioStream : AudioDevice
     {
         public int Id { get; }
         public AudioInput Input { get; set; }
@@ -32,9 +32,15 @@
             Output.Write(data);
         }
 
-        public string GetConfigCommand()
+        public override string GetConfigCommand()
         {
             return $"map {Input?.BuildDeviceCommand()} {Output?.BuildDeviceCommand()} stream {Id}";
         }
+
+        public override void Dispose()
+        {
+        }
+
+       
     }
 }

@@ -2,7 +2,7 @@
 
 namespace VBAN_Studio.Common.Audio
 {
-    public abstract class AudioOutput : IDisposable
+    public abstract class AudioOutput : AudioDevice
     {
         public abstract void Write(byte[] data);
 
@@ -25,6 +25,5 @@ namespace VBAN_Studio.Common.Audio
 
         public abstract string BuildDeviceCommand();
 
-        public abstract void Dispose();
     }
 }

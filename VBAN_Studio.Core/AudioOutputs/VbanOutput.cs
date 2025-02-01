@@ -98,5 +98,10 @@ namespace VBAN_Studio.Core.AudioOutputs
         {
             udpClient?.Dispose();
         }
+
+        public override string GetConfigCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

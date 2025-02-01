@@ -46,5 +46,10 @@ namespace VBAN_Studio.Core.AudioOutputs
         }
 
         public override string BuildDeviceCommand() => $"hw {waveOut.DeviceNumber}";
+
+        public override string GetConfigCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace VBAN_Studio.Common.Audio
 {
-    internal class AudioDevice
+    public interface IAudioDevice : IDisposable
     {
+
+    }
+    public abstract class AudioDevice : IAudioDevice
+    {
+        public abstract void Dispose();
+
+        public abstract string GetConfigCommand();
     }
 }
