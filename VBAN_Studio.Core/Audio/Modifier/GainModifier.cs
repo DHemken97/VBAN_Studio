@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioModifiers
+namespace VBAN_Studio.Core.Audio.Modifier
 {
-    public class VolumeModifier : AudioModifier
+    public class GainModifier : AudioModifier
     {
-        public static float MasterVolume = 1;
-        public float Volume = 1;
+        public static float MasterGain = 1;
+        public float Gain = 1;
         public override byte[] Apply(byte[] data)
         {
-            return AdjustVolume(data, MasterVolume * Volume);
+            return AdjustGain(data, MasterGain * Gain);
         }
-        public static byte[] AdjustVolume(byte[] audioData, float volumeFactor)
+        public static byte[] AdjustGain(byte[] audioData, float volumeFactor)
         {
             if (audioData.Length % 2 != 0)
                 throw new ArgumentException("Byte array length must be even.");

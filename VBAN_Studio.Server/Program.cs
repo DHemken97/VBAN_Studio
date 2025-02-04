@@ -1,16 +1,14 @@
-﻿
-using VBAN_Studio.AudioEngine;
+﻿using VBAN_Studio.Common;
 
-VBAN_Studio_Environment.Init();
-//VBAN_Studio_Environment.SaveEnvironment("AudioStreams.json");
-//VBAN_Studio_Environment.LoadEnvironment("AudioStreams.json");
+var env = new VbanStudioEnvironment();
+
 var exit = false;
 while (!exit)
 {
     var command = Console.ReadLine();
     if (command == "exit")  
         exit = true;
-    else
-        CommandInterpreter.InterpretCommand(command);
+    env.CommandManager.ExecuteCommand(command);
 }
-VBAN_Studio_Environment.Shutdown();
+
+env.RoutingManager.Dispose();

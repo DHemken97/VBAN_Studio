@@ -1,8 +1,11 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using VBAN_Studio.Common.Attributes;
+using VBAN_Studio.Common.Audio;
 
-namespace VBAN_Studio.Common.AudioOutputs
+namespace VBAN_Studio.Core.Audio.Output
 {
+    [RegisterOutputType("VBAN")]
     public class VbanOutput : AudioOutput
     {
         private readonly string streamName;
@@ -17,16 +20,18 @@ namespace VBAN_Studio.Common.AudioOutputs
         private const int BitsPerSample = 16;
         private const int AudioChunkSize = 412;
         private const int VbanHeaderSize = 28;
-
-        public VbanOutput(string name, string ip, int port = 6980)
+        public VbanOutput(string targetDestination, int sampleRate, int channels) : base(targetDestination, sampleRate, channels)
         {
-            streamName = name;
-            targetIp = ip;
-            targetPort = port;
+            var target = targetDestination.Split('@');
+            streamName = target[0];
+            targetIp = target[1];
+            targetPort = 6980;
             udpClient = new UdpClient();
             header = GenerateHeader();
         }
 
+
+        // Generates the static header for the VBAN packet
         private byte[] GenerateHeader()
         {
             byte[] vbanHeader = new byte[VbanHeaderSize];
@@ -44,6 +49,7 @@ namespace VBAN_Studio.Common.AudioOutputs
             return vbanHeader;
         }
 
+        // Creates a new header for each frame, ensuring unique frame counters
         private byte[] GenerateFrameHeader()
         {
             byte[] frameHeader = (byte[])header.Clone();
@@ -51,15 +57,17 @@ namespace VBAN_Studio.Common.AudioOutputs
             return frameHeader;
         }
 
+        // Updates the frame counter in the header
         private void UpdateFrameCounter(byte[] vbanHeader)
         {
             vbanHeader[24] = (byte)(frameCounter & 0xFF);
-            vbanHeader[25] = (byte)((frameCounter >> 8) & 0xFF);
-            vbanHeader[26] = (byte)((frameCounter >> 16) & 0xFF);
-            vbanHeader[27] = (byte)((frameCounter >> 24) & 0xFF);
+            vbanHeader[25] = (byte)(frameCounter >> 8 & 0xFF);
+            vbanHeader[26] = (byte)(frameCounter >> 16 & 0xFF);
+            vbanHeader[27] = (byte)(frameCounter >> 24 & 0xFF);
             frameCounter++;
         }
 
+        // Sends the audio data in chunks, each with a header
         private void SendVBANPacket(byte[] audioData, int bytesRecorded)
         {
             int offset = 0;
@@ -76,26 +84,30 @@ namespace VBAN_Studio.Common.AudioOutputs
             }
         }
 
-        public override void Write(byte[] data)
-        {
-            SendVBANPacket(data, data.Length);
-        }
-
-        public override string GetDisplayName()
-        {
-            return $"{streamName} @ {targetIp}:{targetPort}";
-        }
-
-        public override void Start() { }
-
-        public override string BuildDeviceCommand()
-        {
-            return $"vban {streamName}@{targetIp}";
-        }
-
         public override void Dispose()
         {
+            Stop();
             udpClient?.Dispose();
+        }
+
+        public override string GetStatus()
+        {
+            return IsActive ? $"Streaming to {streamName}@{targetIp}:{targetPort}" : "Stopped";
+        }
+
+        public override void ProcessAudio(byte[] audio)
+        {
+            SendVBANPacket(audio,audio.Length);
+        }
+
+        public override void Start()
+        {
+            IsActive = true;
+        }
+
+        public override void Stop()
+        {
+            IsActive = false;
         }
     }
 }
