@@ -29,7 +29,7 @@ namespace VBAN_Studio.Core.Audio.Input
             
             return new HardwareInput(deviceId,name, sampleRate, channels);
         }
-        private HardwareInput(int deviceId,string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
+        public HardwareInput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
             Buffer = new byte[412 * 256];//static for testing
@@ -43,6 +43,24 @@ namespace VBAN_Studio.Core.Audio.Input
 
             WaveIn.DataAvailable += OnDataAvailable;
         }
+        public HardwareInput(int deviceId, int sampleRate, int channels, int bufferMs = 20) : base("", sampleRate, channels)
+        {
+            DeviceId = deviceId;
+            Buffer = new byte[412 * 256];//static for testing
+
+            WaveIn = new WaveInEvent
+            {
+                WaveFormat = new WaveFormat(sampleRate, 16, channels),
+                BufferMilliseconds = bufferMs,
+                DeviceNumber = DeviceId
+            };
+
+            WaveIn.DataAvailable += OnDataAvailable;
+            var device = WaveInEvent.GetCapabilities(deviceId);
+            var name = device.ProductName;
+            Name = name;
+        }
+
         private int frame;
         private void OnDataAvailable(object? sender, WaveInEventArgs e)
         {

@@ -13,7 +13,7 @@
     }
     public abstract class AudioDevice : IAudioDevice
     {
-        public string Name { get; }
+        public string Name { get; protected set; }
         public int SampleRate { get; }
         public int Channels { get; }
         public bool IsActive { get; protected set; }

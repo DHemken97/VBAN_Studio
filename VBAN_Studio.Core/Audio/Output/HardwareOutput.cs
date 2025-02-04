@@ -37,7 +37,7 @@ namespace VBAN_Studio.Core.Audio.Output
 
             return new HardwareOutput(deviceId, name, sampleRate, channels);
         }
-        private HardwareOutput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
+        public HardwareOutput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
             Buffer = new byte[412 * 256];//static for testing
@@ -47,6 +47,22 @@ namespace VBAN_Studio.Core.Audio.Output
             WaveOut.Init(WaveProvider);
 
         }
+        public HardwareOutput(int deviceId, int sampleRate, int channels, int bufferMs = 20) : base("", sampleRate, channels)
+        {
+            DeviceId = deviceId;
+            Buffer = new byte[412 * 256];//static for testing
+
+            WaveOut = new WaveOutEvent { DeviceNumber = deviceId };
+            WaveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, 16, channels));
+            WaveOut.Init(WaveProvider);
+            using var enumerator = new MMDeviceEnumerator();
+            var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+            var device = devices[deviceId];
+            var name = device.FriendlyName;
+            Name = name;
+
+        }
+
 
         public override void Dispose()
         {

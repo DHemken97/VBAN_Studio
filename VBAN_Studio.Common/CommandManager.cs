@@ -86,7 +86,7 @@ namespace VBAN_Studio.Common
 
                         if (attribute != null)
                         {
-                            _inputTypes.Add(attribute.CommandType, type);
+                            _inputTypes.Add(attribute.CommandType.ToLower(), type);
                         }
                     }
 
@@ -97,7 +97,7 @@ namespace VBAN_Studio.Common
 
                         if (attribute != null)
                         {
-                            _outputTypes.Add(attribute.CommandType, type);
+                            _outputTypes.Add(attribute.CommandType.ToLower(), type);
                         }
                     }
 
@@ -111,10 +111,13 @@ namespace VBAN_Studio.Common
             }
         }
 
-        internal void RegisterEnvironment(VbanStudioEnvironment vbanStudioEnvironment)
+        public void RegisterEnvironment(VbanStudioEnvironment vbanStudioEnvironment)
         {
             _environment = vbanStudioEnvironment;
         }
+
+        public Type GetInputType(string command) => _inputTypes[command];
+        public Type GetOutputType(string command) => _outputTypes[command];
     }
 
 }
