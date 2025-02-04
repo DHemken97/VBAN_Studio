@@ -61,11 +61,12 @@ namespace VBAN_Studio.Common
                 try
                 {
                     var assembly = Assembly.LoadFrom(dll);
-                    var commandTypes = assembly.GetTypes()
+                    var allTypes = assembly.GetTypes();
+                    var commandTypes = allTypes
                         .Where(t => typeof(ICommand).IsAssignableFrom(t) && !t.IsAbstract);
-                    var audioInputTypes = assembly.GetTypes().Where(t => typeof(IAudioInput).IsAssignableFrom(t) && !t.IsAbstract);
-                    var audioOutputTypes = assembly.GetTypes().Where(t => typeof(IAudioOutput).IsAssignableFrom(t) && !t.IsAbstract);
-
+                    var audioInputTypes = allTypes.Where(t => typeof(IAudioInput).IsAssignableFrom(t) && !t.IsAbstract);
+                    var audioOutputTypes = allTypes.Where(t => typeof(IAudioOutput).IsAssignableFrom(t) && !t.IsAbstract);
+                    var initTypes = allTypes.Where(t => t.GetCustomAttribute<RegisterStartupMethod>() != null);
 
 
                     foreach (var type in commandTypes)
@@ -73,7 +74,6 @@ namespace VBAN_Studio.Common
                         if (Activator.CreateInstance(type) is ICommand command)
                         {
                             _commands[command.Name.ToLower()] = command;
-                            Console.WriteLine($"Loaded command: {command.Name} from {dll}");
                         }
                     }
 
@@ -101,7 +101,8 @@ namespace VBAN_Studio.Common
                         }
                     }
 
-
+                    foreach(var type in initTypes)
+                        type.GetCustomAttribute<RegisterStartupMethod>().Execute(type);
 
                 }
                 catch (Exception ex)
