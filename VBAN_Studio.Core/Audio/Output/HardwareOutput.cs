@@ -8,7 +8,6 @@ namespace VBAN_Studio.Core.Audio.Output
     [RegisterOutputType("HW")]
     public class HardwareOutput : AudioOutput
     {
-        private static List<HardwareOutput> _hardwareOutputs = new List<HardwareOutput>();
         public int DeviceId { get; private set; }
         public byte[] Buffer { get; }
         public WaveOutEvent WaveOut { get; private set; }

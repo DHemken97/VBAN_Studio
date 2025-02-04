@@ -10,8 +10,6 @@ namespace VBAN_Studio.Core.Audio.Input
     public class HardwareInput : AudioInput
     {
         public override event EventHandler<AudioDataArgs> DataReceived;
-
-        private static List<HardwareInput> _hardwareInputs = new List<HardwareInput>();
         public int DeviceId { get; private set; }
         public byte[] Buffer { get; }
         public WaveInEvent WaveIn { get; private set; }
@@ -27,7 +25,7 @@ namespace VBAN_Studio.Core.Audio.Input
 
             WaveIn = new WaveInEvent
             {
-                WaveFormat = new WaveFormat(sampleRate, 16, channels),
+                WaveFormat = new WaveFormat(sampleRate, bitDepth, channels),
                 BufferMilliseconds = bufferMs,
                 DeviceNumber = DeviceId
             };
