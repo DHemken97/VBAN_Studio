@@ -1,7 +1,7 @@
 ﻿using NAudio.Wave;
+using System.Threading.Channels;
 using System;
 using VBAN_Studio.Common.Attribute;
-using VBAN_Studio.Common.Attributes;
 using VBAN_Studio.Common.Audio;
 
 namespace VBAN_Studio.Core.Audio.Input
@@ -29,6 +29,21 @@ namespace VBAN_Studio.Core.Audio.Input
             
             return new HardwareInput(deviceId,name, sampleRate, channels);
         }
+        public HardwareInput(int deviceId): base(string.Empty,44100,2)
+        {
+            DeviceId = deviceId;
+            Buffer = new byte[412 * 256];//static for testing
+
+            WaveIn = new WaveInEvent
+            {
+                WaveFormat = new WaveFormat(44100, 16, 2),
+                BufferMilliseconds = 20,
+                DeviceNumber = DeviceId
+            };
+
+            WaveIn.DataAvailable += OnDataAvailable;
+
+        }
         public HardwareInput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
@@ -45,21 +60,12 @@ namespace VBAN_Studio.Core.Audio.Input
         }
         public HardwareInput(int deviceId, int sampleRate, int channels, int bufferMs = 20) : base("", sampleRate, channels)
         {
-            DeviceId = deviceId;
-            Buffer = new byte[412 * 256];//static for testing
 
-            WaveIn = new WaveInEvent
-            {
-                WaveFormat = new WaveFormat(sampleRate, 16, channels),
-                BufferMilliseconds = bufferMs,
-                DeviceNumber = DeviceId
-            };
-
-            WaveIn.DataAvailable += OnDataAvailable;
             var device = WaveInEvent.GetCapabilities(deviceId);
             var name = device.ProductName;
             Name = name;
         }
+
 
         private int frame;
         private void OnDataAvailable(object? sender, WaveInEventArgs e)

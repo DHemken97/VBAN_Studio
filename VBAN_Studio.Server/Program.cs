@@ -1,19 +1,7 @@
-﻿
-
-
-using VBAN_Studio.Common;
-using VBAN_Studio.Common.Audio;
-using VBAN_Studio.Core.Audio.Input;
-using VBAN_Studio.Core.Audio.Output;
+﻿using VBAN_Studio.Common;
 
 var env = new VbanStudioEnvironment();
-/*
-var hwi = HardwareInput.GetDevice(0);
-var hwo = HardwareOutput.GetDevice(5);
-env.RoutingManager.Map(hwi, hwo);
 
-env.RoutingManager.Start();
-*/
 var exit = false;
 while (!exit)
 {

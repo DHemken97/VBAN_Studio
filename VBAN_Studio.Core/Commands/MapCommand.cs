@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VBAN_Studio.Common;
-using VBAN_Studio.Common.Audio;
+﻿using VBAN_Studio.Common;
 using VBAN_Studio.Common.Command;
 
 namespace VBAN_Studio.Core.Commands
@@ -17,14 +11,14 @@ namespace VBAN_Studio.Core.Commands
 
         public override void Execute(VbanStudioEnvironment _environment, string[] tokens)
         {
-            var inputCommandIndex = tokens.ToList().IndexOf(tokens.FirstOrDefault(x => x.StartsWith("--Input")));
+            var inputCommandIndex = tokens.ToList().IndexOf(tokens.FirstOrDefault(x => x.ToLower().StartsWith("--input")));
             var inputCommandType = tokens[inputCommandIndex + 1];
-            var outputCommandIndex = tokens.ToList().IndexOf(tokens.FirstOrDefault(x => x.StartsWith("--Output")));
+            var outputCommandIndex = tokens.ToList().IndexOf(tokens.FirstOrDefault(x => x.ToLower().StartsWith("--output")));
             var outputCommandType = tokens[outputCommandIndex + 1];
 
 
             var inputType = _environment.CommandManager.GetInputType(inputCommandType.ToLower());
-            var outputType = _environment.CommandManager.GetOutputType(inputCommandType.ToLower());
+            var outputType = _environment.CommandManager.GetOutputType(outputCommandType.ToLower());
 
             var inputParams = new List<string>();
             var outputParams = new List<string>();

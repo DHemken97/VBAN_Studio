@@ -1,13 +1,7 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VBAN_Studio.Common.Attributes;
 using VBAN_Studio.Common.Audio;
-using VBAN_Studio.Core.Audio.Output;
 
 namespace VBAN_Studio.Core.Audio.Output
 {
