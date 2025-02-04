@@ -1,0 +1,6 @@
+@VBAN_Studio.WebServer_HostAddress = http://localhost:5213
+
+GET {{VBAN_Studio.WebServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

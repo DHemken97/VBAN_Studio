@@ -77,7 +77,8 @@ namespace VBAN_Studio.Common
                         }
                     }
 
-
+                    _inputTypes.Add("bus", typeof(AudioBus));
+                    _outputTypes.Add("bus", typeof(AudioBus));
 
                     foreach (var type in audioInputTypes)
                     {
@@ -119,6 +120,11 @@ namespace VBAN_Studio.Common
 
         public Type GetInputType(string command) => _inputTypes[command];
         public Type GetOutputType(string command) => _outputTypes[command];
+
+        public List<ICommand> GetCommands()
+        {
+            return _commands.Select(x => x.Value).ToList();
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 {
     public interface IAudioInput : IAudioDevice
     {
+
         public event EventHandler<AudioDataArgs> DataReceived;
 
     }

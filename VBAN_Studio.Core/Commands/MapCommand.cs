@@ -29,7 +29,6 @@ namespace VBAN_Studio.Core.Commands
                 outputParams.Add(tokens[i]);
 
             _environment.RoutingManager.Map(inputType, inputParams, outputType, outputParams);
-
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using NAudio.Wave;
-using System.Threading.Channels;
-using System;
 using VBAN_Studio.Common.Attribute;
 using VBAN_Studio.Common.Audio;
 
@@ -21,6 +19,7 @@ namespace VBAN_Studio.Core.Audio.Input
         public HardwareInput(int deviceId, string name, int sampleRate, int channels, int bitDepth, int bufferMs) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
+            Id = deviceId;
             Buffer = new byte[bufferMs * channels * (sampleRate/1000) * (bitDepth / 8)];
 
             WaveIn = new WaveInEvent
@@ -60,6 +59,7 @@ namespace VBAN_Studio.Core.Audio.Input
 
         public override void Start()
         {
+            if (IsActive) return;
             WaveIn?.StartRecording();
             IsActive = true;
             

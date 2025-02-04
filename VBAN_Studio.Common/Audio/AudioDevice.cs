@@ -2,6 +2,8 @@
 {
     public interface IAudioDevice : IDisposable
     {
+        int Id { get; set; }
+
         string Name { get; }
         int SampleRate { get; }
         int Channels { get; }
@@ -13,6 +15,7 @@
     }
     public abstract class AudioDevice : IAudioDevice
     {
+        public int Id { get; set; }
         public string Name { get; protected set; }
         public int SampleRate { get; }
         public int Channels { get; }

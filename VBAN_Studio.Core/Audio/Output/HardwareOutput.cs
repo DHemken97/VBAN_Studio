@@ -20,6 +20,7 @@ namespace VBAN_Studio.Core.Audio.Output
         public HardwareOutput(int deviceId, string name, int sampleRate, int channels, int bitDepth, int bufferMs) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
+            Id = deviceId;
             Buffer = new byte[bufferMs * channels * (sampleRate / 1000) * (bitDepth / 8)];
             WaveOut = new WaveOutEvent { DeviceNumber = deviceId };
             WaveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, bitDepth, channels));

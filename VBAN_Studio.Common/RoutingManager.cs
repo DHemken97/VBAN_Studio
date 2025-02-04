@@ -11,6 +11,8 @@
     public class RoutingManager : IRoutingManager
     {
         public readonly List<AudioStream> AudioStreams = new List<AudioStream>();
+        public readonly List<IAudioInput> AudioInputs = new List<IAudioInput>();
+        public readonly List<IAudioOutput> AudioOutputs = new List<IAudioOutput>();   
         private bool isRoutingActive;
         public void Map(Type inputType, List<string> inputParams, Type outputType, List<string> outputParams)
         {
@@ -18,21 +20,39 @@
                 throw new ArgumentNullException("Input or Output type cannot be null.");
 
             // Create instances of input and output with proper type conversion
-            IAudioInput inputInstance = (IAudioInput)CreateInstanceWithParams(inputType, inputParams);
-            IAudioOutput outputInstance = (IAudioOutput)CreateInstanceWithParams(outputType, outputParams);
+            IAudioInput inputInstance = (IAudioInput)GetInputInstanceWithParams(inputType, inputParams);
+            IAudioOutput outputInstance = (IAudioOutput)GetOutputInstanceWithParams(outputType, outputParams);
 
             if (inputInstance is not IAudioInput input)
-                throw new InvalidOperationException("The provided input type does not implement IAudioInput.");
+                throw new InvalidOperationException("The provided input type does not implement IIAudioInput.");
 
             if (outputInstance is not IAudioOutput output)
-                throw new InvalidOperationException("The provided output type does not implement IAudioOutput.");
+                throw new InvalidOperationException("The provided output type does not implement IIAudioOutput.");
 
             // Perform the actual mapping logic
-            var stream = new AudioStream(input, output);
+            var stream = new AudioStream(inputInstance, outputInstance);
             AudioStreams.Add(stream); // Assuming _streams is a list of active AudioStreams
-
+            AudioInputs.Add(inputInstance);
+            AudioOutputs.Add(outputInstance);
             Stop();
             Start();
+            Console.WriteLine($"Mapped {input.Name} -> {output.Name}");
+
+        }
+
+        private IAudioOutput GetOutputInstanceWithParams(Type outputType, List<string> outputParams)
+        {
+            var instancesOfType = AudioOutputs.Where(t => t.GetType() == outputType).ToList();
+            var instanceWithName = instancesOfType.FirstOrDefault(x => outputParams.Contains(x.Name));
+            return instanceWithName?? (IAudioOutput)CreateInstanceWithParams(outputType, outputParams);
+
+        }
+
+        private IAudioInput GetInputInstanceWithParams(Type inputType, List<string> inputParams)
+        {
+            var instancesOfType = AudioInputs.Where(t => t.GetType() == inputType).ToList();
+            var instanceWithName = instancesOfType.FirstOrDefault(x => inputParams.Contains(x.Name));
+            return instanceWithName ?? (IAudioInput)CreateInstanceWithParams(inputType, inputParams);
         }
 
         /// <summary>
@@ -68,6 +88,9 @@
 
             var audioStream = new AudioStream(input, output);
             AudioStreams.Add(audioStream);
+          AudioInputs.Add(input);
+          AudioOutputs.Add(output);
+
         }
 
         public void UnMap(IAudioInput input, IAudioOutput output)

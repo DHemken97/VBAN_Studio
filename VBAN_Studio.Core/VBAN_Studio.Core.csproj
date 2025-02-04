@@ -14,6 +14,7 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y /E &quot;$(TargetDir)VBAN_Studio.Core.dll&quot; &quot;$(SolutionDir)Vban_Studio.Server\bin\Debug\net8.0\plugins&quot;&#xD;&#xA;" />
+    <Exec Command="xcopy /Y /E &quot;$(TargetDir)VBAN_Studio.Core.dll&quot; &quot;$(SolutionDir)Vban_Studio.WebServer\bin\Debug\net8.0\plugins&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>

@@ -19,6 +19,13 @@
         {
             Input = input ?? throw new ArgumentNullException(nameof(input));
             Output = output ?? throw new ArgumentNullException(nameof(output));
+            if (output.GetType() == typeof(AudioBus))
+            {
+                var bus = (AudioBus)output;
+                bus.AddSource(input);
+            } 
+                
+                else
             Input.DataReceived += ProcessAudio;
         }
 

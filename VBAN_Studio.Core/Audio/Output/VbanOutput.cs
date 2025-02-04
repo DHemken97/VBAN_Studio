@@ -20,6 +20,7 @@ namespace VBAN_Studio.Core.Audio.Output
         private const int BitsPerSample = 16;
         private const int AudioChunkSize = 412;
         private const int VbanHeaderSize = 28;
+        public VbanOutput(string targetDestination):this(targetDestination,44100,2) { }
         public VbanOutput(string targetDestination, int sampleRate, int channels) : base(targetDestination, sampleRate, channels)
         {
             var target = targetDestination.Split('@');
@@ -70,6 +71,7 @@ namespace VBAN_Studio.Core.Audio.Output
         // Sends the audio data in chunks, each with a header
         private void SendVBANPacket(byte[] audioData, int bytesRecorded)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
             int offset = 0;
             while (offset + AudioChunkSize <= bytesRecorded)
             {

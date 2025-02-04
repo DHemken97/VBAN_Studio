@@ -1,13 +1,17 @@
-﻿namespace VBAN_Studio.Common.Audio
+﻿using VBAN_Studio.Common.Attribute;
+using VBAN_Studio.Common.Attributes;
+
+namespace VBAN_Studio.Common.Audio
 {
     public interface IAudioBus : IAudioInput, IAudioOutput
     {
         void AddSource(IAudioInput source);
         void RemoveSource(IAudioInput source);
     }
-
+    [RegisterInputType("Bus"), RegisterOutputType("Bus")]
     public class AudioBus : IAudioBus
     {
+        public int Id { get; set; }
         public string Name { get; protected set; }
         public int SampleRate { get; }
         public int Channels { get; }
@@ -15,6 +19,13 @@
 
         public List<IAudioInput> Inputs { get; } = new List<IAudioInput>();
         private readonly object syncLock = new object();
+
+        public AudioBus(string name, int sampleRate, int channels)
+        {
+            Name = name;
+            SampleRate = sampleRate;
+            Channels = channels;
+        }
 
         public event EventHandler<AudioDataArgs> DataReceived;
 
@@ -49,13 +60,14 @@
             byte[] inputData = e.AudioData;
             MixAudio(inputData);
         }
-
+        int frame;
         private void MixAudio(byte[] audioData)
         {
             foreach (var input in Inputs)
             {
-                // Mixing logic, e.g., summing audio data or adjusting levels
             }
+
+            DataReceived?.Invoke(this,new AudioDataArgs(this,audioData,frame++));
         }
 
         public void Dispose()
