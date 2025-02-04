@@ -1,50 +1,68 @@
 ﻿namespace VBAN_Studio.Common.Audio
 {
-    public class AudioStream : AudioDevice
+    public interface IAudioStream : IDisposable
     {
-        public int Id { get; }
-        public AudioInput Input { get; set; }
-        public List<AudioModifier> Modifiers { get; }
-        public AudioOutput Output { get; set; }
-        public override string Name { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+        void AddModifier(IAudioModifier modifier);
+        void RemoveModifier(IAudioModifier modifier);
+        void Start();
+        void Stop();
+        void ProcessAudio(object sender, AudioDataArgs e);
+    }
+    public class AudioStream : IAudioStream
+    {
+        public IAudioInput Input { get; }
+        public IAudioOutput Output { get; }
+        public List<IAudioModifier> Modifiers { get; } = new List<IAudioModifier>();
+        private bool isActive;
 
-        public AudioStream(int id)
+        public AudioStream(IAudioInput input, IAudioOutput output)
         {
-            Id = id;
-            Modifiers = new List<AudioModifier>();
+            Input = input ?? throw new ArgumentNullException(nameof(input));
+            Output = output ?? throw new ArgumentNullException(nameof(output));
+            Input.DataReceived += ProcessAudio;
+        }
+
+        public void AddModifier(IAudioModifier modifier)
+        {
+            Modifiers.Add(modifier);
+        }
+
+        public void RemoveModifier(IAudioModifier modifier)
+        {
+            Modifiers.Remove(modifier);
         }
 
         public void Start()
         {
-            if (Input == null || Output == null) return;
+            if (isActive) return;
 
-            Input.DataAvailable += OnInputAvailable;
             Input.Start();
             Output.Start();
-
-            Console.WriteLine($"Stream {Id} Mapped {Input.GetDisplayName()} -> {Output.GetDisplayName()}");
+            isActive = true;
         }
 
-        private void OnInputAvailable(object sender, AudioPacketEventArgs e)
+        public void Stop()
         {
-            var data = e.bytes;
-            foreach (AudioModifier modifier in Modifiers)
-                data = modifier.Apply(data);
-            Output.Write(data);
+            if (!isActive) return;
+
+            Input.Stop();
+            Output.Stop();
+            isActive = false;
         }
 
-        public override string GetConfigCommand()
+        public void ProcessAudio(object sender, AudioDataArgs e)
         {
-            return $"map {Input?.BuildDeviceCommand()} {Output?.BuildDeviceCommand()} stream {Id}";
+            byte[] processedAudio = e.AudioData;
+
+            Modifiers.ForEach(mod => processedAudio = mod.Apply(processedAudio));    
+            
+            Output.ProcessAudio(processedAudio);
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-        }
-
-        public override float[] Process(float[] buffer, int sampleRate)
-        {
-            throw new NotImplementedException();
+            Stop();
+            Input.DataReceived -= ProcessAudio;
         }
     }
 }

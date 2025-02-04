@@ -1,4 +1,6 @@
-﻿namespace VBAN_Studio.Common
+﻿using VBAN_Studio.Common.Audio;
+
+namespace VBAN_Studio.Common
 {
     public class VbanStudioEnvironment
     {

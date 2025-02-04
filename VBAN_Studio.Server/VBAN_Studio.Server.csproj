@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VBAN_Studio.Common\VBAN_Studio.Common.csproj" />
+    <ProjectReference Include="..\VBAN_Studio.Core\VBAN_Studio.Core.csproj" />
   </ItemGroup>
 
 </Project>

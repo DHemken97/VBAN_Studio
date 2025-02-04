@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VBAN_Studio.Core.Commands
+namespace VBAN_Studio.Core.Audio.Output
 {
-    public class MapCommand
+    internal class VbanOutput
     {
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System.Reflection;
+using VBAN_Studio.Common.Attribute;
+using VBAN_Studio.Common.Attributes;
+using VBAN_Studio.Common.Audio;
 using VBAN_Studio.Common.Command;
 
 namespace VBAN_Studio.Common
@@ -6,6 +9,8 @@ namespace VBAN_Studio.Common
     public class CommandManager
     {
         private readonly Dictionary<string, ICommand> _commands = new();
+        private readonly Dictionary<string, Type> _inputTypes = new();
+        private readonly Dictionary<string, Type> _outputTypes = new();
 
         private VbanStudioEnvironment _environment;
 
@@ -58,6 +63,10 @@ namespace VBAN_Studio.Common
                     var assembly = Assembly.LoadFrom(dll);
                     var commandTypes = assembly.GetTypes()
                         .Where(t => typeof(ICommand).IsAssignableFrom(t) && !t.IsAbstract);
+                    var audioInputTypes = assembly.GetTypes().Where(t => typeof(IAudioInput).IsAssignableFrom(t) && !t.IsAbstract);
+                    var audioOutputTypes = assembly.GetTypes().Where(t => typeof(IAudioOutput).IsAssignableFrom(t) && !t.IsAbstract);
+
+
 
                     foreach (var type in commandTypes)
                     {
@@ -67,6 +76,33 @@ namespace VBAN_Studio.Common
                             Console.WriteLine($"Loaded command: {command.Name} from {dll}");
                         }
                     }
+
+
+
+                    foreach (var type in audioInputTypes)
+                    {
+                        var attribute = type.GetCustomAttributes(typeof(RegisterInputTypeAttribute), false)
+                                            .FirstOrDefault() as RegisterInputTypeAttribute;
+
+                        if (attribute != null)
+                        {
+                            _inputTypes.Add(attribute.CommandType, type);
+                        }
+                    }
+
+                    foreach (var type in audioOutputTypes)
+                    {
+                        var attribute = type.GetCustomAttributes(typeof(RegisterOutputTypeAttribute), false)
+                                            .FirstOrDefault() as RegisterOutputTypeAttribute;
+
+                        if (attribute != null)
+                        {
+                            _outputTypes.Add(attribute.CommandType, type);
+                        }
+                    }
+
+
+
                 }
                 catch (Exception ex)
                 {

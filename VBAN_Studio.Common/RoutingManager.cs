@@ -1,109 +1,72 @@
-﻿using VBAN_Studio.Common.Audio;
-
-namespace VBAN_Studio.Common
+﻿namespace VBAN_Studio.Common.Audio
 {
-    public class RoutingManager : IDisposable
+    public interface IRoutingManager : IDisposable
     {
-        public List<AudioDevice> InputDevices { get; } = new();
-        public List<AudioBus> Buses { get; } = new();
-        public List<AudioDevice> OutputDevices { get; } = new();
+        void Map(IAudioInput input, IAudioOutput output);
+        void UnMap(IAudioInput input, IAudioOutput output);
+        void UnMap(int streamIndex);
+        void Start();
+        void Stop();
+    }
+    public class RoutingManager : IRoutingManager
+    {
+        private readonly List<AudioStream> audioStreams = new List<AudioStream>();
+        private bool isRoutingActive;
 
-        public void AddRoute(string inputDevice, string outputDevice)
+        public void Map(IAudioInput input, IAudioOutput output)
         {
-            var input = InputDevices.FirstOrDefault(d => d.Name == inputDevice);
-            var output = OutputDevices.FirstOrDefault(d => d.Name == outputDevice);
+            if (input == null || output == null)
+                throw new ArgumentNullException("Input and Output cannot be null");
 
-            if (input == null)
-            {
-                Console.WriteLine($"Error: Input device '{inputDevice}' not found.");
-                return;
-            }
-
-            if (output == null)
-            {
-                Console.WriteLine($"Error: Output device '{outputDevice}' not found.");
-                return;
-            }
-
-            DirectRoute(input, output);
-            Console.WriteLine($"Route added: {inputDevice} → {outputDevice}");
+            var audioStream = new AudioStream(input, output);
+            audioStreams.Add(audioStream);
         }
 
-        public void AddRouteToBus(string inputDevice, string bus)
+        public void UnMap(IAudioInput input, IAudioOutput output)
         {
-            var input = InputDevices.FirstOrDefault(d => d.Name == inputDevice);
-            var busObj = Buses.FirstOrDefault(b => b.Name == bus);
-
-            if (input == null)
+            var audioStream = audioStreams.FirstOrDefault(s => s.Input == input && s.Output == output);
+            if (audioStream != null)
             {
-                Console.WriteLine($"Error: Input device '{inputDevice}' not found.");
-                return;
-            }
-
-            if (busObj == null)
-            {
-                Console.WriteLine($"Error: Bus '{bus}' not found.");
-                return;
-            }
-
-            busObj.AddInput(input);
-            Console.WriteLine($"Input device {inputDevice} added to bus {bus}");
-        }
-
-        public void AddRouteToOutput(string bus, string outputDevice)
-        {
-            var busObj = Buses.FirstOrDefault(b => b.Name == bus);
-            var output = OutputDevices.FirstOrDefault(d => d.Name == outputDevice);
-
-            if (busObj == null)
-            {
-                Console.WriteLine($"Error: Bus '{bus}' not found.");
-                return;
-            }
-
-            if (output == null)
-            {
-                Console.WriteLine($"Error: Output device '{outputDevice}' not found.");
-                return;
-            }
-
-            busObj.AddOutput(output);
-            Console.WriteLine($"Bus {bus} routed to output device {outputDevice}");
-        }
-
-        public bool BusExists(string bus)
-        {
-            return Buses.Any(b => b.Name == bus);
-        }
-
-        public void Connect(AudioDevice source, AudioDevice destination)
-        {
-            if (destination is AudioBus bus)
-            {
-                bus.AddInput(source);
-            }
-            else
-            {
-                destination.Process(source.Process(new float[1024], 44100), 44100);
+                audioStream.Dispose();
+                audioStreams.Remove(audioStream);
             }
         }
 
-        public bool DeviceExists(string deviceName)
+        public void UnMap(int streamIndex)
         {
-            return InputDevices.Any(d => d.Name == deviceName) ||
-                   OutputDevices.Any(d => d.Name == deviceName);
+            if (streamIndex < 0 || streamIndex >= audioStreams.Count)
+                throw new ArgumentOutOfRangeException(nameof(streamIndex), "Invalid stream index.");
+
+            var audioStream = audioStreams[streamIndex];
+            audioStream.Dispose();
+            audioStreams.RemoveAt(streamIndex);
         }
 
-        public void DirectRoute(AudioDevice input, AudioDevice output)
+        public void Start()
         {
-            // Assume that DirectRoute means an instant audio data pass-through
-            output.Process(input.Process(
-                new float[1024], 44100), 44100);
-            Console.WriteLine($"Direct routing: {input.Name} → {output.Name}");
+            if (isRoutingActive) return;
+
+            foreach (var stream in audioStreams)
+            {
+                stream.Start();
+            }
+            isRoutingActive = true;
+        }
+
+        public void Stop()
+        {
+            if (!isRoutingActive) return;
+
+            foreach (var stream in audioStreams)
+            {
+                stream.Stop();
+            }
+            isRoutingActive = false;
         }
 
         public void Dispose()
         {
+            Stop();
         }
     }
 }
