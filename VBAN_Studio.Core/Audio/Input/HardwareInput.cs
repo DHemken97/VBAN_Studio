@@ -15,36 +15,12 @@ namespace VBAN_Studio.Core.Audio.Input
         public int DeviceId { get; private set; }
         public byte[] Buffer { get; }
         public WaveInEvent WaveIn { get; private set; }
-        public static HardwareInput GetDevice(int deviceId)
-        {
-            if (_hardwareInputs.Any(x => x.DeviceId == deviceId))
-                return _hardwareInputs.First(x => x.DeviceId == deviceId);
 
-
-            //Get Name, Rate, and channels from hardware device
-            var device = WaveInEvent.GetCapabilities(deviceId);
-            var name = device.ProductName;
-            var channels = device.Channels;
-            var sampleRate = 44100;//Static for testing
-            
-            return new HardwareInput(deviceId,name, sampleRate, channels);
-        }
-        public HardwareInput(int deviceId): base(string.Empty,44100,2)
-        {
-            DeviceId = deviceId;
-            Buffer = new byte[412 * 256];//static for testing
-
-            WaveIn = new WaveInEvent
-            {
-                WaveFormat = new WaveFormat(44100, 16, 2),
-                BufferMilliseconds = 20,
-                DeviceNumber = DeviceId
-            };
-
-            WaveIn.DataAvailable += OnDataAvailable;
-
-        }
-        public HardwareInput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
+        public HardwareInput(int deviceId): this(deviceId, 44100, 2) { }
+        public HardwareInput(int deviceId, int sampleRate, int channels) : this(deviceId,GetDeviceName(deviceId), sampleRate, channels,16,20) { }
+        public HardwareInput(int deviceId, int sampleRate, int channels, int bitDepth) : this(deviceId, GetDeviceName(deviceId), sampleRate, channels, bitDepth, 20) { }
+        public HardwareInput(int deviceId, int sampleRate, int channels,int bitDepth, int bufferMs) : this(deviceId, GetDeviceName(deviceId), sampleRate, channels, bitDepth, bufferMs) { }
+        public HardwareInput(int deviceId, string name, int sampleRate, int channels, int bitDepth, int bufferMs) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
             Buffer = new byte[412 * 256];//static for testing
@@ -58,12 +34,12 @@ namespace VBAN_Studio.Core.Audio.Input
 
             WaveIn.DataAvailable += OnDataAvailable;
         }
-        public HardwareInput(int deviceId, int sampleRate, int channels, int bufferMs = 20) : base("", sampleRate, channels)
+        public static string GetDeviceName(int deviceId)
         {
 
             var device = WaveInEvent.GetCapabilities(deviceId);
             var name = device.ProductName;
-            Name = name;
+            return name;
         }
 
 

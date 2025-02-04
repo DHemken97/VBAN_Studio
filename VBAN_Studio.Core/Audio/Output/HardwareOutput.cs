@@ -14,50 +14,29 @@ namespace VBAN_Studio.Core.Audio.Output
         public WaveOutEvent WaveOut { get; private set; }
         private readonly BufferedWaveProvider WaveProvider;
 
-        public static HardwareOutput GetDevice(int deviceId)
-        {
-            if (_hardwareOutputs.Any(x => x.DeviceId == deviceId))
-                return _hardwareOutputs.First(x => x.DeviceId == deviceId);
-
-            using var enumerator = new MMDeviceEnumerator();
-            var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
-
-
-            //Get Name, Rate, and channels from hardware device
-            var device = devices[deviceId];
-            var name = device.FriendlyName;
-            var channels = 2; //static for testing
-            var sampleRate = 44100;//Static for testing
-
-            return new HardwareOutput(deviceId, name, sampleRate, channels);
-        }
-        public HardwareOutput(int deviceId, string name, int sampleRate, int channels, int bufferMs = 20) : base(name, sampleRate, channels)
+        public HardwareOutput(int deviceId) : this(deviceId, 44100, 2) { }
+        public HardwareOutput(int deviceId, int sampleRate, int channels) : this(deviceId, GetDeviceName(deviceId), sampleRate, channels, 16, 20) { }
+        public HardwareOutput(int deviceId, int sampleRate, int channels, int bitDepth) : this(deviceId, GetDeviceName(deviceId), sampleRate, channels, bitDepth, 20) { }
+        public HardwareOutput(int deviceId, int sampleRate, int channels, int bitDepth, int bufferMs) : this(deviceId, GetDeviceName(deviceId), sampleRate, channels, bitDepth, bufferMs) { }
+        public HardwareOutput(int deviceId, string name, int sampleRate, int channels, int bitDepth, int bufferMs) : base(name, sampleRate, channels)
         {
             DeviceId = deviceId;
             Buffer = new byte[412 * 256];//static for testing
-
             WaveOut = new WaveOutEvent { DeviceNumber = deviceId };
-            WaveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, 16, channels));
+            WaveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, bitDepth, channels));
             WaveOut.Init(WaveProvider);
-
         }
-        public HardwareOutput(int deviceId, int sampleRate, int channels, int bufferMs = 20) : base("", sampleRate, channels)
+
+
+        public static string GetDeviceName(int deviceId)
         {
-            DeviceId = deviceId;
-            Buffer = new byte[412 * 256];//static for testing
 
-            WaveOut = new WaveOutEvent { DeviceNumber = deviceId };
-            WaveProvider = new BufferedWaveProvider(new WaveFormat(sampleRate, 16, channels));
-            WaveOut.Init(WaveProvider);
             using var enumerator = new MMDeviceEnumerator();
-            var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
-            var device = devices[deviceId];
-            var name = device.FriendlyName;
-            Name = name;
-
+                var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+                var device = devices[deviceId];
+                var name = device.FriendlyName;
+            return name;
         }
-
-
         public override void Dispose()
         {
             Stop();
