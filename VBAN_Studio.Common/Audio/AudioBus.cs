@@ -61,13 +61,60 @@ namespace VBAN_Studio.Common.Audio
             MixAudio(inputData);
         }
         int frame;
+        int mods;
+        float[][] buffer;
+
         private void MixAudio(byte[] audioData)
         {
-            foreach (var input in Inputs)
-            {
-            }
+            var newBuffer = ConvertToFloats(audioData);
 
-            DataReceived?.Invoke(this,new AudioDataArgs(this,audioData,frame++));
+            if (buffer == null)
+                buffer = newBuffer;
+            else
+                buffer = AverageBuffer(buffer, newBuffer);
+
+            mods++;
+            if (mods < Inputs.Count) return;
+
+            DataReceived?.Invoke(this, new AudioDataArgs(this, audioData, frame++));
+            mods = 0;
+            buffer = null; // Reset buffer for next batch
+        }
+
+        private float[][] AverageBuffer(float[][] buffer, float[][] floats)
+        {
+            if (buffer.Length != floats.Length)
+                throw new InvalidOperationException("Buffer size mismatch.");
+
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                var a = buffer[i];
+                var b = floats[i];
+
+                if (a.Length != b.Length)
+                    throw new InvalidOperationException("Channel length mismatch.");
+
+                for (int j = 0; j < a.Length; j++)
+                    buffer[i][j] = (a[j] + b[j]) / 2f;
+            }
+            return buffer;
+        }
+
+        private float[][] ConvertToFloats(byte[] audioData)
+        {
+            var floats = new float[audioData.Length / 2];
+            for (int i = 0; i < floats.Length; i++)
+                floats[i] = BitConverter.ToInt16(audioData, i * 2) / 32768f; // Normalize
+
+            var channelValues = new float[Channels][];
+            for (int i = 0; i < Channels; i++)
+                channelValues[i] = new float[floats.Length / Channels];
+
+            for (int i = 0; i < floats.Length; i += Channels)
+                for (int j = 0; j < Channels; j++)
+                    channelValues[j][i / Channels] = floats[i + j];
+
+            return channelValues;
         }
 
         public void Dispose()

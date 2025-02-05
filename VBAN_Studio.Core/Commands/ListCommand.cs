@@ -12,11 +12,13 @@ namespace VBAN_Studio.Core.Commands
         public override void Execute(VbanStudioEnvironment _environment, string[] tokens)
         {
             Console.WriteLine("Streams:");
+            var index = 0;
+
             foreach (var stream in _environment.RoutingManager.AudioStreams)
-                Console.WriteLine($"{stream.Input.Name} -> {stream.Output.Name}");
+                Console.WriteLine($"{index++}) {stream.Input.Name} -> {stream.Output.Name}");
 
             Console.WriteLine("\r\n\r\nInputs:");
-            var index = 0;
+            index = 0;
             foreach (var d in _environment.RoutingManager.AudioInputs)
                 Console.WriteLine($"{index++}) {d.Name}");
             Console.WriteLine("\r\n\r\nOutputs:");

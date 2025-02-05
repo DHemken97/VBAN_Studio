@@ -70,6 +70,8 @@
         {
             Stop();
             Input.DataReceived -= ProcessAudio;
+          //  Input.Dispose();
+          //  Output.Dispose();
         }
     }
 }

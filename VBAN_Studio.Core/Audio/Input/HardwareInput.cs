@@ -60,9 +60,14 @@ namespace VBAN_Studio.Core.Audio.Input
         public override void Start()
         {
             if (IsActive) return;
-            WaveIn?.StartRecording();
-            IsActive = true;
-            
+            try
+            {
+                WaveIn?.StartRecording();
+                IsActive = true;
+
+            }
+            catch (Exception) { }
+
         }
 
         public override void Stop()

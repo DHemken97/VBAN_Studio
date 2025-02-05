@@ -29,10 +29,19 @@
             if (outputInstance is not IAudioOutput output)
                 throw new InvalidOperationException("The provided output type does not implement IIAudioOutput.");
 
-            // Perform the actual mapping logic
+            if (AudioStreams.Any(x => x.Input == inputInstance && x.Output == outputInstance))
+            {
+
+                Console.WriteLine("Map already exists");
+                return;
+            }
             var stream = new AudioStream(inputInstance, outputInstance);
+
+
             AudioStreams.Add(stream); // Assuming _streams is a list of active AudioStreams
+            if (!AudioInputs.Contains(inputInstance))
             AudioInputs.Add(inputInstance);
+            if (!AudioOutputs.Contains(outputInstance))
             AudioOutputs.Add(outputInstance);
             Stop();
             Start();
@@ -43,16 +52,27 @@
         private IAudioOutput GetOutputInstanceWithParams(Type outputType, List<string> outputParams)
         {
             var instancesOfType = AudioOutputs.Where(t => t.GetType() == outputType).ToList();
-            var instanceWithName = instancesOfType.FirstOrDefault(x => outputParams.Contains(x.Name));
-            return instanceWithName?? (IAudioOutput)CreateInstanceWithParams(outputType, outputParams);
+            var newInstance = (IAudioOutput)CreateInstanceWithParams(outputType, outputParams);
+            var instanceWithName = instancesOfType.FirstOrDefault(x => x.Id == newInstance.Id || x.Name == newInstance.Name);
+            if (instanceWithName == null)
+                return newInstance;
 
+            newInstance.Dispose();
+
+            return instanceWithName;
         }
 
         private IAudioInput GetInputInstanceWithParams(Type inputType, List<string> inputParams)
         {
             var instancesOfType = AudioInputs.Where(t => t.GetType() == inputType).ToList();
-            var instanceWithName = instancesOfType.FirstOrDefault(x => inputParams.Contains(x.Name));
-            return instanceWithName ?? (IAudioInput)CreateInstanceWithParams(inputType, inputParams);
+            var newInstance = (IAudioInput)CreateInstanceWithParams(inputType, inputParams);
+            var instanceWithName = instancesOfType.FirstOrDefault(x => x.Id == newInstance.Id || x.Name == newInstance.Name);
+            if (instanceWithName == null)
+                return newInstance;
+
+            newInstance.Dispose();
+
+            return instanceWithName;
         }
 
         /// <summary>
@@ -109,8 +129,16 @@
                 throw new ArgumentOutOfRangeException(nameof(streamIndex), "Invalid stream index.");
 
             var audioStream = AudioStreams[streamIndex];
+            Console.WriteLine($"Unmapped {audioStream.Input.Name} -> {audioStream.Output.Name}");
             audioStream.Dispose();
             AudioStreams.RemoveAt(streamIndex);
+
+            if (AudioStreams.Count(x => x.Input == audioStream.Input) < 2 && !audioStream.Input.GetType().IsAssignableTo(typeof(AudioBus)))
+                audioStream.Input.Dispose();
+            if (AudioStreams.Count(x => x.Output == audioStream.Output) < 2 && !audioStream.Input.GetType().IsAssignableTo(typeof(AudioBus)))
+                audioStream.Output.Dispose();
+
+
         }
 
         public void Start()

@@ -1,5 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using System.Threading.Channels;
 using VBAN_Studio.Common.Attributes;
 using VBAN_Studio.Common.Audio;
 
@@ -50,6 +51,7 @@ namespace VBAN_Studio.Core.Audio.Output
 
         public override void Start()
         {
+            WaveOut.Init(WaveProvider);
             WaveOut?.Play();
             IsActive = true;
 
